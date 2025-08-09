@@ -1,0 +1,128 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>UAS Radio Communication Quiz</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; background: #f4f4f4; }
+        h1 { text-align: center; }
+        .question { margin-bottom: 20px; padding: 15px; background: #fff; border-radius: 8px; box-shadow: 0 0 5px rgba(0,0,0,0.1); }
+        .question h3 { margin-top: 0; }
+        .option { margin: 5px 0; }
+        .correct { background-color: #d4edda; }
+        .incorrect { background-color: #f8d7da; }
+        button { margin-top: 20px; padding: 10px 15px; font-size: 16px; }
+    </style>
+</head>
+<body>
+    <h1>UAS Radio Communication Quiz</h1>
+    <div id="quiz-container"></div>
+    
+    <button onclick="checkAnswers()">Submit Answers</button>
+    <button onclick="restartQuiz()">Restart Quiz</button>
+    
+
+    
+    <div id="timer" style="text-align:center; font-size:18px; margin-top:10px;">Time: <span id="time">0:00</span></div>
+    <div id="score" style="text-align:center; font-size:18px; margin:10px 0;"></div>
+    <script>
+        let seconds = 0;
+        let timerInterval = setInterval(() => {
+            seconds++;
+            const minutes = Math.floor(seconds / 60);
+            const secs = seconds % 60;
+            document.getElementById("time").innerText = `${minutes}:${secs < 10 ? '0' : ''}${secs}`;
+        }, 1000);
+
+        const quiz = [
+{ "question": "1 As a UAS operator in controlled airspace, when should you contact ATC?", "options": [{ "text": "Before takeoff and during all operations within controlled airspace", "correct": true }, { "text": "Only if flying above 400 ft", "correct": false }, { "text": "Only after completing the flight", "correct": false }, { "text": "Never, UAS do not communicate with ATC", "correct": false }] },
+{ "question": "2 Which radio phrase correctly indicates your aircraft is ready for departure?", "options": [{ "text": "\"Ready for departure at point Alpha\"", "correct": true }, { "text": "\"Starting drone now\"", "correct": false }, { "text": "\"Begin takeoff\"", "correct": false }, { "text": "\"All set, let's go\"", "correct": false }] },
+{ "question": "3 If ATC says: “Hold position”, what is your correct response?", "options": [{ "text": "\"Holding position\"", "correct": true }, { "text": "\"Continuing anyway\"", "correct": false }, { "text": "\"Hovering ready\"", "correct": false }, { "text": "\"Wilco and proceed\"", "correct": false }] },
+{ "question": "4 What should you include when first calling ATC as a UAS pilot?", "options": [{ "text": "Call sign, aircraft type (UAS), position, request", "correct": true }, { "text": "Your name and license", "correct": false }, { "text": "Drone battery status", "correct": false }, { "text": "Weather conditions", "correct": false }] },
+{ "question": "5 The phrase “Standby” from ATC means:", "options": [{ "text": "Wait for further instructions, do not transmit unless necessary", "correct": true }, { "text": "You may take off", "correct": false }, { "text": "Proceed with caution", "correct": false }, { "text": "End communication", "correct": false }] },
+{ "question": "6 A UAS pilot must monitor which frequency when operating near a Class D airport?", "options": [{ "text": "The published tower frequency", "correct": true }, { "text": "Emergency 121.5 MHz", "correct": false }, { "text": "ATIS only", "correct": false }, { "text": "Ground services frequency", "correct": false }] },
+{ "question": "7 If ATC says: “Say position”, how do you respond?", "options": [{ "text": "State your current location and altitude", "correct": true }, { "text": "Say \"no idea\"", "correct": false }, { "text": "Respond with coordinates only", "correct": false }, { "text": "Read back last command", "correct": false }] },
+{ "question": "8 When is it mandatory for a UAS pilot to give position reports?", "options": [{ "text": "When requested by ATC or operating in controlled airspace", "correct": true }, { "text": "Only during emergencies", "correct": false }, { "text": "During visual flight only", "correct": false }, { "text": "Every 5 minutes regardless of location", "correct": false }] },
+{ "question": "9 “Negative” means:", "options": [{ "text": "No or permission denied", "correct": true }, { "text": "You're unsure", "correct": false }, { "text": "Yes", "correct": false }, { "text": "Abort the mission", "correct": false }] },
+{ "question": "10 “Roger” is used to indicate:", "options": [{ "text": "You have received and understood the transmission", "correct": true }, { "text": "You agree completely", "correct": false }, { "text": "You are ready for takeoff", "correct": false }, { "text": "Your name is Roger", "correct": false }] },
+{ "question": "11 If instructed to “Squawk 7000”, what should a UAS pilot do?", "options": [{ "text": "Set transponder code 7000 if equipped", "correct": true }, { "text": "Climb to 7000 feet", "correct": false }, { "text": "Respond on 7000 MHz", "correct": false }, { "text": "End the mission", "correct": false }] },
+{ "question": "12 What does “Line of Sight” refer to in UAS communication?", "options": [{ "text": "The operator must be able to visually see the aircraft at all times", "correct": true }, { "text": "Using visual sensors only", "correct": false }, { "text": "Line of GPS tracking", "correct": false }, { "text": "ATC radar tracking", "correct": false }] },
+{ "question": "13 If your UAS loses link and enters a fail-safe mode, what should you report to ATC?", "options": [{ "text": "“Lost link, UAS entering autonomous recovery mode”", "correct": true }, { "text": "\"Drone lost, good luck\"", "correct": false }, { "text": "\"Returning soon\"", "correct": false }, { "text": "\"No need to worry\"", "correct": false }] },
+{ "question": "14 What is the correct initial contact phrase with ATC for a UAS mission?", "options": [{ "text": "\"Tower, UAS N1234U, 2 NM east at 200 ft AGL, request transit\"", "correct": true }, { "text": "\"Tower, it's me with the drone\"", "correct": false }, { "text": "\"Launching UAV now\"", "correct": false }, { "text": "\"Permission for takeoff granted?\"", "correct": false }] },
+{ "question": "15 When ATC says “Cleared through Class C airspace”, this means:", "options": [{ "text": "You are authorized to fly through the airspace as instructed", "correct": true }, { "text": "You must land immediately", "correct": false }, { "text": "You have visual clearance only", "correct": false }, { "text": "You must change your squawk code", "correct": false }] },
+{ "question": "16 A correct readback of “Maintain 300 ft AGL” would be:", "options": [{ "text": "\"Maintaining 300 ft AGL\"", "correct": true }, { "text": "\"Copy, three hundred\"", "correct": false }, { "text": "\"Roger, staying low\"", "correct": false }, { "text": "\"Received three-zero-zero\"", "correct": false }] },
+{ "question": "17 ATC instructs: “Report entering and exiting the area”. How should you respond?", "options": [{ "text": "\"Wilco, will report both entering and exiting\"", "correct": true }, { "text": "\"Will enter soon\"", "correct": false }, { "text": "\"Entering now\"", "correct": false }, { "text": "\"Copy and done\"", "correct": false }] },
+{ "question": "18 You receive: “UAS N1234U, proceed direct to waypoint Bravo, remain below 400 ft”. What is your correct action?", "options": [{ "text": "Fly directly to waypoint Bravo and stay under 400 ft AGL", "correct": true }, { "text": "Fly at max altitude", "correct": false }, { "text": "Ignore and return", "correct": false }, { "text": "Hover at last point", "correct": false }] },
+{ "question": "19 Why is standardized phraseology important in UAS operations?", "options": [{ "text": "It reduces misunderstandings and increases safety in shared airspace", "correct": true }, { "text": "It saves battery life", "correct": false }, { "text": "It's only for crewed aircraft", "correct": false }, { "text": "It is not enforced", "correct": false }] },
+{ "question": "20 You hear: “Traffic 2 miles north, 500 ft AGL, type unknown”. What do you do?", "options": [{ "text": "Look for the traffic visually and maintain separation", "correct": true }, { "text": "Land immediately", "correct": false }, { "text": "Request go-around", "correct": false }, { "text": "Turn left without confirming", "correct": false }] },
+
+        ];
+
+        const container = document.getElementById("quiz-container");
+
+        quiz.forEach((q, index) => {
+            const div = document.createElement("div");
+            div.className = "question";
+            div.innerHTML = `<h3>Q${index + 1}: ${q.question}</h3>`;
+            q.options.forEach((opt, i) => {
+                const inputId = `q${index}_opt${i}`;
+                div.innerHTML += `
+                    <div class="option">
+                        <input type="radio" name="q${index}" id="${inputId}" value="${opt.correct}">
+                        <label for="${inputId}">${opt.text}</label>
+                    </div>`;
+            });
+            container.appendChild(div);
+        });
+
+        
+        
+        function checkAnswers() {
+            clearInterval(timerInterval);
+            let score = 0;
+
+            clearInterval(timerInterval);
+            let score = 0;
+
+            const questions = document.querySelectorAll(".question");
+            
+            const total = quiz.length;
+            
+            document.getElementById("score").innerText = `Score: ${score} / ${total}`;
+            localStorage.setItem("uas_quiz_score", `${score}/${total}`);
+
+            questions.forEach((q, i) => {
+
+                const radios = q.querySelectorAll("input[type=radio]");
+                radios.forEach(r => {
+                    const label = q.querySelector(`label[for="${r.id}"]`);
+                    
+                    if (r.checked) {
+                        if (r.value === "true") {
+                            score++;
+                        }
+
+                        label.parentElement.classList.add(r.value === "true" ? "correct" : "incorrect");
+                    }
+                });
+            });
+        }
+    
+        function restartQuiz() {
+            location.reload();
+        }
+
+        window.onload = function() {
+            const lastScore = localStorage.getItem("uas_quiz_score");
+            if (lastScore) {
+                const scoreDiv = document.getElementById("score");
+                scoreDiv.innerHTML = `Last attempt: ${lastScore}`;
+            }
+        }
+    </script>
+</body>
+</html>
+
+</body>
+</html>
